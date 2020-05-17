@@ -1,5 +1,5 @@
 import React from "react"
-import { graphql, useStaticQuery } from "gatsby"
+import { Link, graphql, useStaticQuery } from "gatsby"
 
 import "./layout.scss"
 
@@ -11,9 +11,9 @@ const BlogRoll = () => {
 
   return (
     <div className="container">
-      <div className="columns is-2">
+      <div className="columns">
         {data.allMarkdownRemark.edges.map(({ node }) => (
-          <div className="column">
+          <div className="column is-half">
             <div class="box">
               <article className="media">
                 <div className="media-left">
@@ -21,16 +21,25 @@ const BlogRoll = () => {
                     <img src={node.frontmatter.image} alt="Image" />
                   </figure>
                 </div>
-                <div class="media-content">
-                  <div class="content">
+                <div className="media-content">
+                  <div className="content is-small">
                     <div key={node.id}>
-                      <h3>
-                        {node.frontmatter.title}{" "}
-                        <span>— {node.frontmatter.date}</span>
-                      </h3>
+                      <Link to={node.fields.slug}>
+                        <h4 className="title is-4">{node.frontmatter.title}</h4>
+                      </Link>
+                      <span>{node.frontmatter.date}</span>
                       <p>{node.excerpt}</p>
                     </div>
                   </div>
+                  <nav className="level is-mobile">
+                    <div className="level-left">
+                      {node.frontmatter.tags.map(tag => (
+                        <a className="level-item" aria-label="reply">
+                          <button className="button is-small">{tag}</button>
+                        </a>
+                      ))}
+                    </div>
+                  </nav>
                 </div>
               </article>
             </div>
@@ -51,6 +60,11 @@ const query = graphql`
           frontmatter {
             title
             date(formatString: "DD MMMM, YYYY")
+            image
+            tags
+          }
+          fields {
+            slug
           }
           excerpt
         }
