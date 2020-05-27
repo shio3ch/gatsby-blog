@@ -1,5 +1,6 @@
 import React from "react"
 import { Link, graphql, useStaticQuery } from "gatsby"
+import PreviewImage from "./preview-image"
 
 import "./layout.scss"
 
@@ -14,22 +15,29 @@ const BlogRoll = () => {
       <div className="columns">
         {data.allMarkdownRemark.edges.map(({ node }) => (
           <div className="column is-half">
-            <div class="box">
+            <div className="box">
               <article className="media">
                 <div className="media-left">
                   <figure className="image is-64x64">
-                    <img src={node.frontmatter.image} alt="Image" />
+                    <PreviewImage
+                      imageInfo={{
+                        fileName: node.frontmatter.image,
+                        alt: "hoge",
+                      }}
+                    />
                   </figure>
                 </div>
                 <div className="media-content">
                   <div className="content is-small">
                     <div key={node.id}>
-                      <Link to={node.fields.slug}>
+                      <Link to={node.fields.slug} className="blog-roll link">
                         <h4 className="title is-4">{node.frontmatter.title}</h4>
                       </Link>
                       <span>{node.frontmatter.date}</span>
                       <p>{node.excerpt}</p>
                     </div>
+                    {/* 投稿者 */}
+                    <p>Contributor:{node.frontmatter.author}</p>
                   </div>
                   <nav className="level is-mobile">
                     <div className="level-left">
@@ -60,6 +68,7 @@ const query = graphql`
           frontmatter {
             title
             date(formatString: "DD MMMM, YYYY")
+            author
             image
             tags
           }
